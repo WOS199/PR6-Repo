@@ -2,125 +2,75 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('http://localhost:5678/api/works')
     .then(response => response.json())
     .then(works => {
+        
+        // Reset du HTML du portfolio et affichage de tous les travaux.
+        function reset() {
+            document.querySelector(".gallery").innerHTML = "";
+            generateWorks(works);
+        }
 
-        document.querySelector(".gallery").innerHTML = "";
-        generateWorks(works);
+        reset();
         
-        
+        // Récupération des 4 boutons de la section "filters".
         const allWorksBtn = document.querySelector(".allWorksBtn");
         const objectsBtn = document.querySelector(".objectsBtn");
         const appartementsBtn = document.querySelector(".appartementsBtn");
         const hotelsBtn = document.querySelector(".hotelsBtn");
 
-        const worksObjects = Array.from(works);
-        const worksAppartements = Array.from(works);
-        const worksHotels = Array.from(works);
-
-
-
-        objectsBtn.addEventListener("click", () => {
-            sortObjects();
-            document.querySelector(".gallery").innerHTML = "";
-            generateWorks(worksObjects);
-            const allLinks = document.querySelectorAll(".filters a");
-            allLinks.forEach((link) => {
-                link.classList.remove("selected");
-                if(link.classList.contains("objectsBtn")){
-                    link.classList.add("selected");
-                }
-              });
-        })
-
-        appartementsBtn.addEventListener("click", () => {
-            sortAppartements();
-            document.querySelector(".gallery").innerHTML = "";
-            generateWorks(worksAppartements);
-            const allLinks = document.querySelectorAll(".filters a");
-            allLinks.forEach((link) => {
-                link.classList.remove("selected");
-                if(link.classList.contains("appartementsBtn")){
-                    link.classList.add("selected");
-                }
-              });
-        })
-
-        hotelsBtn.addEventListener("click", () => {
-            sortHotels();
-            document.querySelector(".gallery").innerHTML = "";
-            generateWorks(worksHotels);
-            const allLinks = document.querySelectorAll(".filters a");
-            allLinks.forEach((link) => {
-                link.classList.remove("selected");
-                if(link.classList.contains("hotelsBtn")){
-                    link.classList.add("selected");
-                }
-              });
-        })
-
-        allWorksBtn.addEventListener("click", () => {
-            document.querySelector(".gallery").innerHTML = "";
-            generateWorks(works);
-            const allLinks = document.querySelectorAll(".filters a");
-            allLinks.forEach((link) => {
-                link.classList.remove("selected");
-                if(link.classList.contains("allWorksBtn")){
-                    link.classList.add("selected");
-                }
-              });
-        })
-
-
-        
-        
-
+        // Fonction de génération des travaux dans le HTML.
         function generateWorks(works){
             for(let i=0 ; i < works.length ; i++){
-                // Création des balises HTML pour chaque carte, qui seront injectées dans ".gallery"
+                // Création des balises HTML pour chaque carte, qui seront injectées dans ".gallery".
                 const figureElement = document.createElement("figure");
                 const imageElement = document.createElement("img");
                 const imgCaptionElement = document.createElement("figcaption");
                 
-                // Remplissage des données pour chaque nouvel élément
+                // Remplissage des données pour chaque nouvel élément.
                 imageElement.src = works[i].imageUrl;
                 imageElement.alt = works[i].title;
                 imgCaptionElement.innerText = works[i].title;
     
-                // Injection des éléments dans le DOM
+                // Injection des éléments dans le DOM.
                 document.querySelector(".gallery").appendChild(figureElement);
                 figureElement.appendChild(imageElement);
                 figureElement.appendChild(imgCaptionElement);
             }
         } 
 
-        /* const catSet = new Set();
-        for(let i = 0 ; i < works.length ; i++){
-            catSet.add(works[i].category.id);
-        } */
-        
-
-        function sortObjects() {
-            for(let i = worksObjects.length -1 ; i >= 0 ; i--){
-                if(worksObjects[i].category.id !== 1){
-                    worksObjects.splice(i,1)
-                }
-            }
+        // Reset de la classe "selected" sur les liens de la section "filters".
+        function resetSelected(){
+            const allLinks = document.querySelectorAll(".filters a");
+            allLinks.forEach((link) => {
+                link.classList.remove("selected");
+            });
         }
 
-        function sortAppartements() {
-            for(let i = worksAppartements.length -1 ; i >= 0 ; i--){
-                if(worksAppartements[i].category.id !== 2){
-                    worksAppartements.splice(i,1)
-                }
-            }
+        // Fonction de filtrage en fonction d'une id de catégorie.
+        function filterWorks(catId){
+            const filteredWorks = works.filter((work) => work.category.id === catId);
+            document.querySelector(".gallery").innerHTML = "";
+            generateWorks(filteredWorks);
+            resetSelected();
         }
 
-        function sortHotels() {
-            for(let i = worksHotels.length -1 ; i >= 0 ; i--){
-                if(worksHotels[i].category.id !== 3){
-                    worksHotels.splice(i,1)
-                }
-            }
-        }
+        // Comportement de chaque bouton de la section "filters" au clic.
+        objectsBtn.addEventListener("click", (event) => {
+            filterWorks(1)
+            event.target.classList.add("selected");
+        });
+        appartementsBtn.addEventListener("click", (event) => {
+            filterWorks(2)
+            event.target.classList.add("selected");
+        });
+        hotelsBtn.addEventListener("click", (event) => {
+            filterWorks(3)
+            event.target.classList.add("selected");
+        });
+        allWorksBtn.addEventListener("click", (event) => {
+            reset()
+            resetSelected()
+            event.target.classList.add("selected");
+        });
 
 
     })
