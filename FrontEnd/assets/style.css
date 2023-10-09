@@ -104,6 +104,11 @@ nav li {
 	font-size: 1.2em;
 }
 
+nav li a{
+	text-decoration: none;
+	color: unset;
+}
+
 li:hover {
 	color: #B1663C;
 }
@@ -188,6 +193,15 @@ li:hover {
 	margin: 27vh auto;
 }
 
+.accessDenied {
+	font-size: 16px;
+	text-align: center;
+	background-color: #fc7d82;
+	padding: 10px;
+	border-radius: 5px;
+	display: none;
+}
+
 #contact > * {
 	text-align: center;
 
@@ -195,6 +209,7 @@ li:hover {
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form, #login form {
 	text-align: left;
 	margin-top:30px;
