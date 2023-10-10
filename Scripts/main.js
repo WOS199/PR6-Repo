@@ -76,12 +76,26 @@ fetch('http://localhost:5678/api/works')
 
 let authentified = false;
 const token = localStorage.getItem('token');
-const loggedOnly = document.querySelector(".loggedOnly");
+const loggedOnly = document.querySelectorAll(".loggedOnly");
+const allUsers = document.querySelectorAll(".allUsers");
 
 if (token) {
-    loggedOnly.style.display = "block";
+    authentified = true;
+    for (let i=0 ; i < loggedOnly.length ; i++){
+        loggedOnly[i].style.display = "null";
+    }
+    for(let i=0 ; i < allUsers.length ; i++){
+        allUsers[i].style.display = "none"
+    }
+    
 } else {
-    loggedOnly.style.display = "none";
+    authentified = false;
+    for (let i=0 ; i < loggedOnly.length ; i++){
+        loggedOnly[i].style.display = "none";
+    }
+    for(let i=0 ; i < allUsers.length ; i++){
+        allUsers[i].style.display = "null"
+    }
 }
 
 

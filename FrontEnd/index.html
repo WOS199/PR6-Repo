@@ -9,9 +9,21 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
 	<script type="module" defer src="../Scripts/main.js"></script>
 </head>
 <body>
+<div class="loggedUi loggedOnly">
+	<div class="wrapper">
+		<i class="fa-regular fa-pen-to-square"></i>
+		<p>Mode édition</p>
+	</div>
+</div>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 	<nav>
@@ -36,13 +48,18 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div class="wrapper">
+			<h2>Mes Projets</h2>
+			<a href="#" class="loggedOnly modBtn wrapper">
+				<i class="fa-regular fa-pen-to-square"></i>
+				<p>Modifier</p>
+			</a>
+		</div>
 		<div class="filters">
-			<a class="allWorksBtn selected">Tous</a>
-			<a class="objectsBtn">Objets</a>
-			<a class="appartementsBtn">Appartements</a>
-			<a class="hotelsBtn">Hôtels & Restaurants</a>
-			<a class="loggedOnly">Logged users only</a>
+			<a class="allUsers allWorksBtn selected">Tous</a>
+			<a class="allUsers objectsBtn">Objets</a>
+			<a class="allUsers appartementsBtn">Appartements</a>
+			<a class="allUsers hotelsBtn">Hôtels & Restaurants</a>
 		</div>
 		<div class="gallery">
 			<figure>
