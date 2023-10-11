@@ -71,6 +71,11 @@ section {
 	margin: 50px 0
 }
 
+a {
+	text-decoration: none;
+	color: unset;
+}
+
 h1{
 	display: flex;
 	flex-direction: column;
@@ -93,6 +98,13 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+
+h3{
+	font-size: 20px;
+	text-align: center;
+	margin-bottom: 50px;
+}
+
 nav ul {
 	display: flex;
 	align-items: center;
@@ -104,10 +116,10 @@ nav li {
 	font-size: 1.2em;
 }
 
-nav li a{
+/* nav li a{
 	text-decoration: none;
 	color: unset;
-}
+} */
 
 li:hover {
 	color: #B1663C;
@@ -150,7 +162,7 @@ li:hover {
 }
 
 .filters a {
-	text-decoration: none;
+	/* text-decoration: none; */
 	font-family: 'Syne';
 	border: 1px solid #1D6154;
 	padding: 10px 15px;
@@ -159,6 +171,20 @@ li:hover {
 	color: #1D6154;
 	cursor: pointer;
 } 
+
+.modalBtn {
+	text-decoration: none;
+	font-family: 'Syne';
+	background-color: #1D6154;
+	padding: 10px 15px;
+	margin: 50px auto 0 auto;
+	text-align: center;
+	width: 200px;
+	display: block;
+	border-radius: 25px;
+	color: #fff;
+	cursor: pointer;
+}
 
 .filters a:hover {
 	background-color: #1D6154;
@@ -178,7 +204,7 @@ li:hover {
 	grid-row-gap: 20px;
 }
 
-.gallery img {
+.gallery img, .modalGallery img {
 	width: 100%;
 
 }
@@ -278,15 +304,66 @@ footer nav {
 	gap: 10px;
 }
 
-.wrapper a {
-	text-decoration: none;
-	color: unset;
-}
-
 .modBtn {
 	margin-left: 30px;
 	margin-top: 8px;
 }
 
+.modal {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
 
+.modalWrapper {
+	background-color: #FFF;
+	width: 600px;
+	max-width: calc(100vw - 50px);
+	max-height: calc(100vh - 50px);
+	padding: 50px;
+	border-radius: 10px;
+}
 
+.modalGallery {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 10px;
+}
+
+.modalGallery figure {
+	position: relative;
+}
+
+.modalGallery div {
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+	background-color: black;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.separator {
+	border: none;
+	height: 1px;
+	background-color: #D3D3D3;
+	margin-top: 50px;
+}
+
+.closeBtn {
+	float: right;
+}

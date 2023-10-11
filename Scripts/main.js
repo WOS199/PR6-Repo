@@ -5,7 +5,9 @@ fetch('http://localhost:5678/api/works')
     // Reset du HTML du portfolio et affichage de tous les travaux.
     function reset() {
         document.querySelector(".gallery").innerHTML = "";
+        document.querySelector(".modalGallery").innerHTML = "";
         generateWorks(works);
+        generateModalGallery(works);
     }
 
     reset();
@@ -35,6 +37,39 @@ fetch('http://localhost:5678/api/works')
             figureElement.appendChild(imgCaptionElement);
         }
     } 
+
+    function generateModalGallery(works){
+        for(let i=0 ; i < works.length ; i++){
+            // Création des balises HTML "img" qui seront injectées dans la modale.
+            const modalFigElement = document.createElement("figure");
+            const modalImageElement = document.createElement("img");
+            const modalIconDiv = document.createElement("div");
+            // Remplissage des données pour chaque nouvel élément.
+            modalImageElement.src = works[i].imageUrl;
+            modalIconDiv.id = works[i].id;
+            // Injection des éléments dans le DOM.
+            document.querySelector(".modalGallery").appendChild(modalFigElement);
+            modalFigElement.appendChild(modalImageElement);
+            modalFigElement.appendChild(modalIconDiv);
+            modalIconDiv.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+            // Suppression.
+            modalIconDiv.addEventListener("click", (event) => {
+                const supressId = modalIconDiv.id;
+                const apiUrl = "http://localhost:5678/api/works/";
+                const deleteUrl = apiUrl + supressId;
+                const token = window.localStorage.getItem("token");
+                fetch(deleteUrl, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({}),
+                })
+                reset();
+            })
+        }
+    }
 
     // Reset de la classe "selected" sur les liens de la section "filters".
     function resetSelected(){
@@ -71,6 +106,34 @@ fetch('http://localhost:5678/api/works')
         event.target.classList.add("selected");
     });
 
+     // ----- MODAL ----- //
+
+    const modBtn = document.querySelector(".modBtn");
+    const target = document.querySelector(".modal");
+    const modalWrapper = document.querySelector(".modalWrapper")
+    const closeBtn = document.querySelector(".closeBtn");
+
+    const openModal = function(event){
+        event.preventDefault();
+        target.style.display = null;
+        modalWrapper.addEventListener("click", stopPropagation);
+        target.addEventListener("click", closeModal);
+        closeBtn.addEventListener("click", closeModal);
+    }
+
+    const closeModal = function(event){
+        event.preventDefault();
+        target.style.display = "none";
+        target.removeEventListener("click", closeModal);
+        closeBtn.removeEventListener("click", closeModal);
+    }
+
+    const stopPropagation = function(event){
+        event.stopPropagation();
+    }
+
+    modBtn.addEventListener("click", openModal);
+
 
 })
 
@@ -100,6 +163,31 @@ if (token) {
 
 
 
+
+ // ----- POST PROJECT ----- //   
+
+ /* function getBackProject11 () {
+    const token = window.localStorage.getItem("token");
+    const projectImg = document.getElementById("postProject");
     
+    projectImg.addEventListener("change", () => {
+        const newImg = projectImg.files[0]; // Obtenez le premier fichier sélectionné
+
+        const formData = new FormData();
+        formData.append("image", newImg); // Ajoutez le fichier à l'objet FormData
+        formData.append("title", "Hotel First Arte - New Delhi");
+        formData.append("category", 3);
+
+        fetch('http://localhost:5678/api/works', {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+    });
+}
+
+getBackProject11(); */
 
 
