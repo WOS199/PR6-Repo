@@ -5,9 +5,11 @@ fetch('http://localhost:5678/api/works')
     // Reset du HTML du portfolio et affichage de tous les travaux.
     function reset() {
         document.querySelector(".gallery").innerHTML = "";
-        document.querySelector(".modalGallery").innerHTML = "";
         generateWorks(works);
-        generateModalGallery(works);
+        if (document.querySelector(".modalGallery")) {
+            document.querySelector(".modalGallery").innerHTML = "";
+            generateModalGallery(works);
+        }
     }
 
     reset();
@@ -119,9 +121,25 @@ fetch('http://localhost:5678/api/works')
     const openModal = function(event){
         event.preventDefault();
         target.style.display = null;
+
+        modalWrapper.innerHTML = `
+        <a href="#">
+				<i class="closeBtn fa-solid fa-xmark"></i>
+			</a>
+			<h3>Galerie Photo</h3>
+			<div class="modalGallery">
+			</div>
+			<hr class="separator">
+			<a class="modalBtn">Ajouter une photo</a>`;
+
+        generateModalGallery(works);
+        
         modalWrapper.addEventListener("click", stopPropagation);
         target.addEventListener("click", closeModal);
+        const closeBtn = document.querySelector(".closeBtn");
         closeBtn.addEventListener("click", closeModal);
+
+        AddProjectForm();
     }
 
     // Fonction de fermeture de la modal.
@@ -129,6 +147,7 @@ fetch('http://localhost:5678/api/works')
         event.preventDefault();
         target.style.display = "none";
         target.removeEventListener("click", closeModal);
+        const closeBtn = document.querySelector(".closeBtn");
         closeBtn.removeEventListener("click", closeModal);
     }
 
@@ -142,16 +161,15 @@ fetch('http://localhost:5678/api/works')
 
 })
 
-// let authentified = false;
+// Affichage ou masquage des éléments en fonction de l'authentification.
 
-
+// Récupération des éléments
 const token = localStorage.getItem('token');
 const loggedOnly = document.querySelectorAll(".loggedOnly");
 const allUsers = document.querySelectorAll(".allUsers");
 
-// Affichage ou masquage des éléments en fonction de l'authentification.
+// Comportements
 if (token) {
-    // authentified = true;
     for (let i=0 ; i < loggedOnly.length ; i++){
         loggedOnly[i].style.display = "null";
     }
@@ -160,7 +178,6 @@ if (token) {
     }
     
 } else {
-    // authentified = false;
     for (let i=0 ; i < loggedOnly.length ; i++){
         loggedOnly[i].style.display = "none";
     }
@@ -176,8 +193,13 @@ logOut.addEventListener("click", () => {
 })
 
 // Injection du formulaire d'ajout de projet à la modal
-const addProjetcBtn = document.querySelector(".modalBtn");
-const addProjectHTML = `
+
+function AddProjectForm () {
+    const addProjetcBtn = document.querySelector(".modalBtn");
+    const addProjectHTML = `
+    <a href="#">
+    <i class="closeBtn fa-solid fa-xmark"></i>
+    </a>
     <h3>Ajout photo</h3>
     <form action="" method="">
         <div class="dropPhoto">
@@ -197,8 +219,10 @@ const addProjectHTML = `
             <option value="2">Appartements</option>
             <option value="3">Hôtels & Restaurants</option>
         </select>
+        <hr class="separator">
+		<button class="SendProjectBtn">Valider</button>
     </form>`;
-addProjetcBtn.addEventListener("click", () => {
+    addProjetcBtn.addEventListener("click", () => {
     document.querySelector(".modalWrapper").innerHTML = addProjectHTML;
 
     // Génération d'une vignette lors de la sélection d'une image
@@ -229,11 +253,25 @@ addProjetcBtn.addEventListener("click", () => {
         }
     }
 })
+}
+
+    
 
 
 
 
- // ----- POST PROJECT ----- //   
+
+// Ajout d'un projet
+
+
+
+
+
+
+ 
+
+
+// ----- POST PROJECT ----- //   
 
  /* function getBackProject11 () {
     const token = window.localStorage.getItem("token");
