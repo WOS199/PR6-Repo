@@ -172,7 +172,7 @@ li:hover {
 	cursor: pointer;
 } 
 
-.modalBtn {
+.modalBtn, .sendProjectBtn {
 	text-decoration: none;
 	font-family: 'Syne';
 	background-color: #1D6154;
@@ -184,6 +184,11 @@ li:hover {
 	border-radius: 25px;
 	color: #fff;
 	cursor: pointer;
+	border: unset;
+}
+
+.sendProjectBtn {
+	background-color: #A7A7A7;
 }
 
 .filters a:hover {
