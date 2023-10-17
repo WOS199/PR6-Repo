@@ -18,7 +18,7 @@ fetch('http://localhost:5678/api/works')
     const appartementsBtn = document.querySelector(".appartementsBtn");
     const hotelsBtn = document.querySelector(".hotelsBtn");
 
-    // Fonction de génération des travaux dans le HTML.
+    // Fonction de génération des travaux dans le HTML (homepage).
     function generateWorks(works){
         for(let i=0 ; i < works.length ; i++){
             // Création des balises HTML pour chaque carte, qui seront injectées dans ".gallery".
@@ -38,6 +38,7 @@ fetch('http://localhost:5678/api/works')
         }
     } 
 
+    // Fonction de génération des travaux dans le HTML (modal) + feature suppression.
     function generateModalGallery(works){
         for(let i=0 ; i < works.length ; i++){
             // Création des balises HTML "img" qui seront injectées dans la modale.
@@ -108,11 +109,13 @@ fetch('http://localhost:5678/api/works')
 
      // ----- MODAL ----- //
 
+    // Récupération des éléments.
     const modBtn = document.querySelector(".modBtn");
     const target = document.querySelector(".modal");
     const modalWrapper = document.querySelector(".modalWrapper")
     const closeBtn = document.querySelector(".closeBtn");
 
+    // Fonction d'ouverture de la modal.
     const openModal = function(event){
         event.preventDefault();
         target.style.display = null;
@@ -121,6 +124,7 @@ fetch('http://localhost:5678/api/works')
         closeBtn.addEventListener("click", closeModal);
     }
 
+    // Fonction de fermeture de la modal.
     const closeModal = function(event){
         event.preventDefault();
         target.style.display = "none";
@@ -132,18 +136,22 @@ fetch('http://localhost:5678/api/works')
         event.stopPropagation();
     }
 
+    // Déclenchement ouverture de la modal.
     modBtn.addEventListener("click", openModal);
 
 
 })
 
-let authentified = false;
+// let authentified = false;
+
+
 const token = localStorage.getItem('token');
 const loggedOnly = document.querySelectorAll(".loggedOnly");
 const allUsers = document.querySelectorAll(".allUsers");
 
+// Affichage ou masquage des éléments en fonction de l'authentification.
 if (token) {
-    authentified = true;
+    // authentified = true;
     for (let i=0 ; i < loggedOnly.length ; i++){
         loggedOnly[i].style.display = "null";
     }
@@ -152,7 +160,7 @@ if (token) {
     }
     
 } else {
-    authentified = false;
+    // authentified = false;
     for (let i=0 ; i < loggedOnly.length ; i++){
         loggedOnly[i].style.display = "none";
     }
@@ -160,6 +168,67 @@ if (token) {
         allUsers[i].style.display = "null"
     }
 }
+
+// Logout
+const logOut = document.querySelector(".logout");
+logOut.addEventListener("click", () => {
+    window.localStorage.removeItem("token");
+})
+
+// Injection du formulaire d'ajout de projet à la modal
+const addProjetcBtn = document.querySelector(".modalBtn");
+const addProjectHTML = `
+    <h3>Ajout photo</h3>
+    <form action="" method="">
+        <div class="dropPhoto">
+            <label for="inputFile">
+                <i class="imgIcon fa-regular fa-image"></i>
+                <input class="visually-hidden" id="inputFile" type="file" name="projectPhoto" accept=".jpg, .png">
+                <span class="fileBtn">+ Ajouter photos</span>
+                <p>jpg, png : 4mo max</p>
+            </label>
+        </div>
+        <label for="title">Titre</label>
+        <input type="text" name="title" id="title">
+        <label for="cat">Catégorie</label>
+        <select name="cat" id="cat">
+            <option value=""></option>
+            <option value="1">Objets</option>
+            <option value="2">Appartements</option>
+            <option value="3">Hôtels & Restaurants</option>
+        </select>
+    </form>`;
+addProjetcBtn.addEventListener("click", () => {
+    document.querySelector(".modalWrapper").innerHTML = addProjectHTML;
+
+    // Génération d'une vignette lors de la sélection d'une image
+    const dropPhoto = document.querySelector(".dropPhoto");
+    const inputFile = document.getElementById("inputFile");
+    inputFile.addEventListener("change", () => {
+        handleFiles(inputFile.files);
+    })
+
+    function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+        
+            if (!file.type.startsWith("image/")) {
+            continue;
+            }
+        
+            const img = document.createElement("img");
+            img.file = file;
+            dropPhoto.innerHTML = "";
+            dropPhoto.appendChild(img);
+        
+            const reader = new FileReader();
+            reader.onload = (e) => {
+            img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+})
 
 
 

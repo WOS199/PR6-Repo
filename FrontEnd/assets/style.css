@@ -237,22 +237,80 @@ li:hover {
 	margin-bottom: 20px;
 }
 
-#contact form, #login form {
+#contact form, #login form, .modalWrapper form {
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input, #login input {
+#contact input, #login input, .modalWrapper input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label, #login label {
+
+.modalWrapper select {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	background-color: #FFF;
+	border-right: 16px solid transparent;
+}
+
+.dropPhoto label {
+	cursor: pointer;
+}
+
+.fileBtn {
+	background-color: #CBD6DC;
+	padding: 10px 30px;
+	border-radius: 50px;
+}
+
+.visually-hidden {
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+}
+
+.dropPhoto {
+	width: 100%;
+	background-color: #E8F1F6;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.dropPhoto p {
+	margin-bottom: 10px;
+}
+
+.dropPhoto img {
+	max-width: 100%;
+	max-height: 300px;
+}
+
+.imgIcon {
+	font-size: 50px;
+	color: #CBD6DC;
+}
+
+.dropPhoto label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+}
+
+#contact label, #login label, .modalWrapper label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea, #login textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
