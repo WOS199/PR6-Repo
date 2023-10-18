@@ -191,6 +191,10 @@ li:hover {
 	background-color: #A7A7A7;
 }
 
+.sendProjectBtn--active {
+	background-color: #1D6154;
+}
+
 .filters a:hover {
 	background-color: #1D6154;
 	color: #fff;
