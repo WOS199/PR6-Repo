@@ -78,7 +78,14 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({}),
-        });
+        })
+        // Managing possible error 401 //
+        .then(response => {
+          if (response.status === 401) {
+            window.location.href = "login.html";
+            window.localStorage.removeItem("token");
+          }
+        })
         reset();
       });
     }
@@ -343,7 +350,14 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
               Authorization: `Bearer ${token}`,
             },
             body: newProject,
-          });
+          })
+          // Managing possible error 401 //
+          .then(response => {
+            if (response.status === 401) {
+              window.location.href = "login.html";
+              window.localStorage.removeItem("token");
+            }
+          })
         }
       });
     });
