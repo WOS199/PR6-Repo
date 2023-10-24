@@ -101,7 +101,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
 
   // ----- FILTERS DYNAMIC GENERATION ----- //
 
-  function generateFilters(cat) {
+  function generateFilters() {
     // Creating HTML tag for the 'all works' btn + assigning content and classes + injecting to the DOM. //
     const allWorks = document.createElement("a");
     allWorks.classList.add("allUsers", "selected");
@@ -113,7 +113,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
       event.target.classList.add("selected");
     });
 
-    // Creating HTML tags fot the other btn, using the 'ctagteories' fetch result //
+    // Creating HTML tags fot the other btn, using the 'cagteories' fetch result //
     for (let i = 0; i < categories.length; i++) {
       const btn = document.createElement("a");
       btn.classList.add("allUsers");
@@ -197,25 +197,15 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   const modBtn = document.querySelector(".modBtn");
   const target = document.querySelector(".modal");
   const modalWrapper = document.querySelector(".modalWrapper");
-  const closeBtn = document.querySelector(".closeBtn");
 
   // This function opens the modal (phase 1) //
   const openModal = function (event) {
     event.preventDefault();
     target.style.display = null;
+    document.querySelector(".phase-1").style.display = null;
+    document.querySelector(".phase-2").style.display = "none";
 
-    // Generating contents for the phase 1 //
-    modalWrapper.innerHTML = `
-          <a href="#">
-                  <i class="closeBtn fa-solid fa-xmark"></i>
-              </a>
-              <h3>Galerie Photo</h3>
-              <div class="modalGallery">
-              </div>
-              <hr class="separator">
-              <a class="modalBtn">Ajouter une photo</a>`;
-
-    generateModalGallery(works);
+   
 
     modalWrapper.addEventListener("click", stopPropagation);
     target.addEventListener("click", closeModal);
@@ -223,50 +213,34 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     closeBtn.addEventListener("click", closeModal);
 
     // This function handles the phase 2 of the modal //
-    OpenProjectForm();
+    modalPhase2();
   };
 
   // Modal phase 2 //
 
-  function OpenProjectForm() {
+  function modalPhase2() {
     const addProjetcBtn = document.querySelector(".modalBtn");
-    // Content of the phase 2 //
-    const addProjectHTML = `
-          <a href="#">
-          <i class="backModal fa-solid fa-arrow-left"></i>
-          </a>
-          <a href="#">
-          <i class="closeBtn fa-solid fa-xmark"></i>
-          </a>
-          <h3>Ajout photo</h3>
-          <form class="form" action="" method="">
-          <div class="dropPhoto">
-              <label for="inputFile">
-                  <i class="imgIcon fa-regular fa-image"></i>
-                  <input class="visually-hidden input" id="inputFile" type="file" name="projectPhoto" accept=".jpg, .png">
-                  <span class="fileBtn">+ Ajouter photos</span>
-                  <p>jpg, png : 4mo max</p>
-              </label>
-          </div>
-          <label for="title">Titre</label>
-          <input class="input" type="text" name="title" id="title">
-          <label for="cat">Catégorie</label>
-          <select class="input" name="cat" id="cat">
-              <option value=""></option>
-              <option value=${categories[0].id}>${categories[0].name}</option>
-              <option value=${categories[1].id}>${categories[1].name}</option>
-              <option value=${categories[2].id}>${categories[2].name}</option>
-          </select>
-          <hr class="separator">
-          <p class="accessDenied">Veuillez renseigner tous les champs</p>
-          <a type="submit" class="sendProjectBtn">Valider</a>
-          </form>`;
-
-    // If the button is clicked on, generating the new content of the modal phase 2 (described just before) //
+    
     addProjetcBtn.addEventListener("click", () => {
-      document.querySelector(".modalWrapper").innerHTML = addProjectHTML;
-      const closeBtn = document.querySelector(".closeBtn");
-      closeBtn.addEventListener("click", closeModal);
+      /* document.querySelector(".modalWrapper").innerHTML = addProjectHTML; */
+      document.getElementById("cat").innerHTML = "";
+      const select = document.getElementById("cat");
+      const option = document.createElement("option");
+      option.value = "";
+      select.appendChild(option);
+
+
+      for (let i=0 ; i < categories.length ; i ++){
+        const catOption = document.createElement("option");
+        catOption.value = categories[i].id;
+        catOption.innerText = categories[i].name;
+        select.appendChild(catOption);
+      }
+
+      document.querySelector(".phase-1").style.display = "none";
+      document.querySelector(".phase-2").style.display = null;
+      const closeBtn2 = document.querySelector(".closeBtn2");
+      closeBtn2.addEventListener("click", closeModal);
       document.querySelector(".backModal").addEventListener("click", openModal);
 
       // Generating a preview of the selected image //
@@ -367,9 +341,12 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   const closeModal = function (event) {
     event.preventDefault();
     target.style.display = "none";
+    document.querySelector(".phase-1").style.display = "none";
+    document.querySelector(".phase-2").style.display = "none";
     target.removeEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.removeEventListener("click", closeModal);
+    
   };
 
   // This function stops the propagation of the eventListeners handling the closing of the modal //
