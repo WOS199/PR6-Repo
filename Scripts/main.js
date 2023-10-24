@@ -3,7 +3,7 @@ let imgToAdd = "";
 let titleToAdd = "";
 let catToAdd = "";
 
-// Fetch requests for works and categories //
+// ----- API FETCH FOR WORKS AND CATEGORIES ----- //
 const fetchWorks = fetch("http://localhost:5678/api/works").then((response) =>
   response.json()
 );
@@ -27,6 +27,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
 
   reset();
 
+  // ----- MAIN GALLERY ----- //
   // This fonction generates all the HTML and dynamic contents for the main gallery //
   function generateWorks(works) {
     for (let i = 0; i < works.length; i++) {
@@ -47,6 +48,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     }
   }
 
+  // ----- MODAL GALLERY AND PROJECT SUPRESSION ----- //
   // This fonction generates all the HTML and dynamic contents for the modal gallery and handle the work suppression feature //
   function generateModalGallery(works) {
     for (let i = 0; i < works.length; i++) {
@@ -65,7 +67,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
       modalFigElement.appendChild(modalIconDiv);
       modalIconDiv.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
 
-      // Work suppression feature
+      // Work suppression feature //
       modalIconDiv.addEventListener("click", (event) => {
         const supressId = modalIconDiv.id;
         const apiUrl = "http://localhost:5678/api/works/";
@@ -92,15 +94,6 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   }
 
   // ----- PROJECTS FILTERING ----- //
-
-  /* // Fetching the 4 buttons from the 'filters' section. //
-  const allWorksBtn = document.querySelector(".allWorksBtn");
-  const objectsBtn = document.querySelector(".objectsBtn");
-  const appartementsBtn = document.querySelector(".appartementsBtn");
-  const hotelsBtn = document.querySelector(".hotelsBtn"); */
-
-  // ----- FILTERS DYNAMIC GENERATION ----- //
-
   function generateFilters() {
     // Creating HTML tag for the 'all works' btn + assigning content and classes + injecting to the DOM. //
     const allWorks = document.createElement("a");
@@ -172,26 +165,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     }
   }
 
-  /* // Buttons behaviour in the "filters" section.
-  objectsBtn.addEventListener("click", (event) => {
-    filterWorks(1);
-    event.target.classList.add("selected");
-  });
-  appartementsBtn.addEventListener("click", (event) => {
-    filterWorks(2);
-    event.target.classList.add("selected");
-  });
-  hotelsBtn.addEventListener("click", (event) => {
-    filterWorks(3);
-    event.target.classList.add("selected");
-  });
-  allWorksBtn.addEventListener("click", (event) => {
-    reset();
-    resetSelected();
-    event.target.classList.add("selected");
-  }); */
-
-  // ----- MODAL ----- //
+  // ----- MODAL PHASE 1 ----- //
 
   // Fecthing the necessary elements //
   const modBtn = document.querySelector(".modBtn");
@@ -204,9 +178,6 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     target.style.display = null;
     document.querySelector(".phase-1").style.display = null;
     document.querySelector(".phase-2").style.display = "none";
-
-   
-
     modalWrapper.addEventListener("click", stopPropagation);
     target.addEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
@@ -216,14 +187,16 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     modalPhase2();
   };
 
-  // Modal phase 2 //
+  // ----- MODAL PHASE 2 ----- //
 
   function modalPhase2() {
     const addProjetcBtn = document.querySelector(".modalBtn");
     
     addProjetcBtn.addEventListener("click", () => {
-      /* document.querySelector(".modalWrapper").innerHTML = addProjectHTML; */
-      document.getElementById("cat").innerHTML = "";
+      /* document.getElementById("cat").innerHTML = "";
+      document.getElementById("title").value = ""; */
+      document.querySelector(".accessDenied").style.display = "none";
+      /* imgToAdd = ""; */
       const select = document.getElementById("cat");
       const option = document.createElement("option");
       option.value = "";
@@ -275,7 +248,6 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
       }
 
       // Modal phase 2 button behaviour - change color if all fields are countaining something //
-
       const inputs = document.querySelectorAll(".input");
       inputs.forEach((input) => {
         input.addEventListener("input", checkInputs);
@@ -297,15 +269,13 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
         }
       }
 
-      // 'Adding a project' feature //
+      // ----- ADDING A PROJECT ----- //
 
       // The 3 necessary data for the fetch are now collected and placed into a new FromData Object //
       const submit = document.querySelector(".sendProjectBtn");
       submit.addEventListener("click", () => {
-        const title = document.getElementById("title").value;
-        titleToAdd = title;
-        const cat = document.getElementById("cat").value;
-        catToAdd = cat;
+        titleToAdd = document.getElementById("title").value;
+        catToAdd = document.getElementById("cat").value;
 
         const newProject = new FormData();
         newProject.append("image", imgToAdd);
