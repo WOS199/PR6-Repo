@@ -1,10 +1,10 @@
 // Data initialization (for the 'add a project' feature) //
 
+let imgToAdd;
+let titleToAdd;
+let catToAdd;
 
-let imgToAdd
-let titleToAdd
-let catToAdd
-
+const submit = document.querySelector(".sendProjectBtn");
 
 // ----- API FETCH FOR WORKS AND CATEGORIES ----- //
 const fetchWorks = fetch("http://localhost:5678/api/works").then((response) =>
@@ -34,7 +34,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     /* imgToAdd = "";
     titleToAdd = "";
     catToAdd = ""; */
-  
+
     document.getElementById("title").value = "";
     document.getElementById("cat").value = "";
     document.querySelector("input[type=file]").value = null;
@@ -94,13 +94,13 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
           },
           body: JSON.stringify({}),
         })
-        // Managing possible error 401 //
-        .then(response => {
-          if (response.status === 401) {
-            window.location.href = "login.html";
-            window.localStorage.removeItem("token");
-          }
-        })
+          // Managing possible error 401 //
+          .then((response) => {
+            if (response.status === 401) {
+              window.location.href = "login.html";
+              window.localStorage.removeItem("token");
+            }
+          });
         reset();
       });
     }
@@ -197,138 +197,137 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.addEventListener("click", closeModal);
 
-    // This function handles the phase 2 of the modal //
-    modalPhase2();
+    submit.removeEventListener("click", submitProject);
   };
 
   // ----- MODAL PHASE 2 ----- //
 
-  function modalPhase2() {
-    const addProjetcBtn = document.querySelector(".modalBtn");
+  const addProjetcBtn = document.querySelector(".modalBtn");
+
+  addProjetcBtn.addEventListener("click", () => {
+    document.querySelector(".accessDenied").style.display = "none";
+    setModalPhase2();
     
-    addProjetcBtn.addEventListener("click", () => {
-      document.getElementById("cat").innerHTML = "";
-      
-      document.querySelector(".accessDenied").style.display = "none";
-      const select = document.getElementById("cat");
-      const option = document.createElement("option");
-      option.value = "";
-      select.appendChild(option);
+    submit.addEventListener("click", submitProject);
+  });
 
+  function setModalPhase2() {
+    const select = document.getElementById("cat");
+    select.innerHTML = "";
+    const option = document.createElement("option");
+    option.value = "";
+    select.appendChild(option);
 
-      for (let i=0 ; i < categories.length ; i ++){
-        const catOption = document.createElement("option");
-        catOption.value = categories[i].id;
-        catOption.innerText = categories[i].name;
-        select.appendChild(catOption);
+    for (let i = 0; i < categories.length; i++) {
+      const catOption = document.createElement("option");
+      catOption.value = categories[i].id;
+      catOption.innerText = categories[i].name;
+      select.appendChild(catOption);
+    }
+
+    document.querySelector(".phase-1").style.display = "none";
+    document.querySelector(".phase-2").style.display = null;
+    const closeBtn2 = document.querySelector(".closeBtn2");
+    closeBtn2.addEventListener("click", closeModal);
+    document.querySelector(".backModal").addEventListener("click", openModal);
+  }
+
+  // Generating a preview of the selected image //
+  /* const dropPhoto = document.querySelector(".dropPhoto"); */
+  const inputFile = document.getElementById("inputFile");
+  inputFile.addEventListener("change", () => {
+    handleFiles(inputFile.files);
+  });
+
+  // This function fecthes the selected img, assign it the the imgToAdd var and displays the img //
+  function handleFiles(files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      imgToAdd = files[i];
+
+      if (!file.type.startsWith("image/")) {
+        continue;
       }
 
-      document.querySelector(".phase-1").style.display = "none";
-      document.querySelector(".phase-2").style.display = null;
-      const closeBtn2 = document.querySelector(".closeBtn2");
-      closeBtn2.addEventListener("click", closeModal);
-      document.querySelector(".backModal").addEventListener("click", openModal);
+      /* const img = document.createElement("img"); */
+      //___NEW___//
+      const img = document.querySelector(".dropPhoto img");
+      img.style.display = null;
+      document.querySelector(".dropPhoto label").style.display = "none";
 
-      // Generating a preview of the selected image //
-      /* const dropPhoto = document.querySelector(".dropPhoto"); */
-      const inputFile = document.getElementById("inputFile");
-      inputFile.addEventListener("change", () => {
-        handleFiles(inputFile.files);
-      });
+      img.file = file;
 
-      // This function fecthes the selected img, assign it the the imgToAdd var and displays the img //
-      function handleFiles(files) {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          imgToAdd = files[i];
+      /* dropPhoto.innerHTML = ""; */
+      /* dropPhoto.appendChild(img); */
 
-          if (!file.type.startsWith("image/")) {
-            continue;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Modal phase 2 button behaviour - change color if all fields are countaining something //
+  const inputs = document.querySelectorAll(".input");
+  inputs.forEach((input) => {
+    input.addEventListener("input", checkInputs);
+  });
+
+  function checkInputs() {
+    const allFilled = [...inputs].every((input) => input.value.trim() !== "");
+
+    if (allFilled) {
+      document
+        .querySelector(".sendProjectBtn")
+        .classList.add("sendProjectBtn--active");
+    } else {
+      document
+        .querySelector(".sendProjectBtn")
+        .classList.remove("sendProjectBtn--active");
+    }
+  }
+
+  // ----- ADDING A PROJECT ----- //
+
+  // The 3 necessary data for the fetch are now collected and placed into a new FromData Object //
+  
+  function submitProject() {
+    titleToAdd = document.getElementById("title").value;
+    catToAdd = document.getElementById("cat").value;
+
+    const newProject = new FormData();
+    newProject.append("image", imgToAdd);
+    newProject.append("title", titleToAdd);
+    newProject.append("category", catToAdd);
+
+    const token = window.localStorage.getItem("token");
+
+    if (!titleToAdd || !catToAdd || !imgToAdd) {
+      document.querySelector(".accessDenied").style.display = "block";
+    } else {
+      // Fetch request to post a new project //
+      fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: newProject,
+      })
+        // Managing possible error 401 //
+        .then((response) => {
+          if (response.status === 401) {
+            window.location.href = "login.html";
+            window.localStorage.removeItem("token");
           }
-
-          /* const img = document.createElement("img"); */
-          //___NEW___//
-          const img = document.querySelector(".dropPhoto img");
-          img.style.display = null;
-          document.querySelector(".dropPhoto label").style.display = "none";
-          
-          img.file = file;
-
-          /* dropPhoto.innerHTML = ""; */
-          /* dropPhoto.appendChild(img); */
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-
-      // Modal phase 2 button behaviour - change color if all fields are countaining something //
-      const inputs = document.querySelectorAll(".input");
-      inputs.forEach((input) => {
-        input.addEventListener("input", checkInputs);
-      });
-
-      function checkInputs() {
-        const allFilled = [...inputs].every(
-          (input) => input.value.trim() !== ""
-        );
-
-        if (allFilled) {
-          document
-            .querySelector(".sendProjectBtn")
-            .classList.add("sendProjectBtn--active");
-        } else {
-          document
-            .querySelector(".sendProjectBtn")
-            .classList.remove("sendProjectBtn--active");
-        }
-      }
-
-      // ----- ADDING A PROJECT ----- //
-
-      // The 3 necessary data for the fetch are now collected and placed into a new FromData Object //
-      const submit = document.querySelector(".sendProjectBtn");
-      submit.addEventListener("click", () => {
-        titleToAdd = document.getElementById("title").value;
-        catToAdd = document.getElementById("cat").value;
-
-        const newProject = new FormData();
-        newProject.append("image", imgToAdd);
-        newProject.append("title", titleToAdd);
-        newProject.append("category", catToAdd);
-
-        const token = window.localStorage.getItem("token");
-
-        if (!titleToAdd || !catToAdd || !imgToAdd) {
-          document.querySelector(".accessDenied").style.display = "block";
-        } else {
-          // Fetch request to post a new project //
-          fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: newProject,
-          })
-          // Managing possible error 401 //
-          .then(response => {
-            if (response.status === 401) {
-              window.location.href = "login.html";
-              window.localStorage.removeItem("token");
-            }
-          })
-        }
-      });
-    });
+        });
+    }
   }
 
   // This function closes the modal //
   const closeModal = function (event) {
     event.preventDefault();
-    resetValues()
+    resetValues();
     target.style.display = "none";
     document.querySelector(".phase-1").style.display = "none";
     document.querySelector(".phase-2").style.display = "none";
@@ -339,7 +338,8 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     target.removeEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.removeEventListener("click", closeModal);
-    
+
+    submit.removeEventListener("click", submitProject);
   };
 
   // This function stops the propagation of the eventListeners handling the closing of the modal //
@@ -359,20 +359,18 @@ logOut.addEventListener("click", () => {
 
 
 
-
-
-document.addEventListener("keydown", (e) => {
-    if(e.key === "l"){
-        console.log(imgToAdd);
-    }
-})
+/* document.addEventListener("keydown", (e) => {
+  if (e.key === "l") {
+    console.log(imgToAdd);
+  }
+});
 
 document.addEventListener("keydown", (e) => {
-    if(e.key === "k"){
-        console.log(titleToAdd);
-    }
-}) 
-
+  if (e.key === "k") {
+    console.log(titleToAdd);
+  }
+});
+ */
 // ----- POST PROJECT ----- //
 
 /* function getBackProject11 () {
