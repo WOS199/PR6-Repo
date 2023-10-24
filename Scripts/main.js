@@ -1,7 +1,10 @@
 // Data initialization (for the 'add a project' feature) //
-let imgToAdd = "";
-let titleToAdd = "";
-let catToAdd = "";
+
+
+let imgToAdd
+let titleToAdd
+let catToAdd
+
 
 // ----- API FETCH FOR WORKS AND CATEGORIES ----- //
 const fetchWorks = fetch("http://localhost:5678/api/works").then((response) =>
@@ -26,6 +29,16 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   }
 
   reset();
+
+  function resetValues() {
+    /* imgToAdd = "";
+    titleToAdd = "";
+    catToAdd = ""; */
+  
+    document.getElementById("title").value = "";
+    document.getElementById("cat").value = "";
+    document.querySelector("input[type=file]").value = null;
+  }
 
   // ----- MAIN GALLERY ----- //
   // This fonction generates all the HTML and dynamic contents for the main gallery //
@@ -178,6 +191,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     target.style.display = null;
     document.querySelector(".phase-1").style.display = null;
     document.querySelector(".phase-2").style.display = "none";
+    resetValues();
     modalWrapper.addEventListener("click", stopPropagation);
     target.addEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
@@ -193,10 +207,9 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     const addProjetcBtn = document.querySelector(".modalBtn");
     
     addProjetcBtn.addEventListener("click", () => {
-      /* document.getElementById("cat").innerHTML = "";
-      document.getElementById("title").value = ""; */
+      document.getElementById("cat").innerHTML = "";
+      
       document.querySelector(".accessDenied").style.display = "none";
-      /* imgToAdd = ""; */
       const select = document.getElementById("cat");
       const option = document.createElement("option");
       option.value = "";
@@ -217,7 +230,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
       document.querySelector(".backModal").addEventListener("click", openModal);
 
       // Generating a preview of the selected image //
-      const dropPhoto = document.querySelector(".dropPhoto");
+      /* const dropPhoto = document.querySelector(".dropPhoto"); */
       const inputFile = document.getElementById("inputFile");
       inputFile.addEventListener("change", () => {
         handleFiles(inputFile.files);
@@ -233,11 +246,16 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
             continue;
           }
 
-          const img = document.createElement("img");
+          /* const img = document.createElement("img"); */
+          //___NEW___//
+          const img = document.querySelector(".dropPhoto img");
+          img.style.display = null;
+          document.querySelector(".dropPhoto label").style.display = "none";
+          
           img.file = file;
 
-          dropPhoto.innerHTML = "";
-          dropPhoto.appendChild(img);
+          /* dropPhoto.innerHTML = ""; */
+          /* dropPhoto.appendChild(img); */
 
           const reader = new FileReader();
           reader.onload = (e) => {
@@ -310,9 +328,14 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   // This function closes the modal //
   const closeModal = function (event) {
     event.preventDefault();
+    resetValues()
     target.style.display = "none";
     document.querySelector(".phase-1").style.display = "none";
     document.querySelector(".phase-2").style.display = "none";
+
+    document.querySelector(".dropPhoto img").style.display = "none";
+    document.querySelector(".dropPhoto label").style.display = null;
+
     target.removeEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.removeEventListener("click", closeModal);
@@ -334,15 +357,9 @@ logOut.addEventListener("click", () => {
   window.localStorage.removeItem("token");
 });
 
-/* document.addEventListener("keydown", (e) => {
-    if(e.key === "m"){
-        const newProject = new FormData();
-        newProject.append("image", imgToAdd); 
-        newProject.append("title", titleToAdd);
-        newProject.append("category", catToAdd);
-        console.log(newProject);
-    }
-})
+
+
+
 
 document.addEventListener("keydown", (e) => {
     if(e.key === "l"){
@@ -354,7 +371,7 @@ document.addEventListener("keydown", (e) => {
     if(e.key === "k"){
         console.log(titleToAdd);
     }
-}) */
+}) 
 
 // ----- POST PROJECT ----- //
 
