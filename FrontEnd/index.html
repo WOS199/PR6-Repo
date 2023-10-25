@@ -24,7 +24,6 @@
       <div class="wrapper">
         <i class="fa-regular fa-pen-to-square"></i>
         <p>Mode édition</p>
-        <!-- <input type="file" id="postProject"> -->
       </div>
     </div>
     <header>
@@ -71,7 +70,7 @@
             </a>
             <h3>Galerie Photo</h3>
             <div class="modalGallery"></div>
-            <hr class="separator" />
+            <div class="separator"></div>
             <a class="modalBtn">Ajouter une photo</a>
           </div>
           <div class="phase-2" style="display: none">
@@ -84,7 +83,7 @@
             <h3>Ajout photo</h3>
             <form class="form" action="" method="">
               <div class="dropPhoto">
-				<img style="display: none;">
+                <img style="display: none" />
                 <label for="inputFile">
                   <i class="imgIcon fa-regular fa-image"></i>
                   <input
@@ -100,9 +99,8 @@
               <label for="title">Titre</label>
               <input class="input" type="text" name="title" id="title" />
               <label for="cat">Catégorie</label>
-              <select class="input" name="cat" id="cat">
-              </select>
-              <hr class="separator" />
+              <select class="input" name="cat" id="cat"></select>
+              <div class="separator"></div>
               <p class="accessDenied">Veuillez renseigner tous les champs</p>
               <a type="submit" class="sendProjectBtn">Valider</a>
             </form>

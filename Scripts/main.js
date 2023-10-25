@@ -1,15 +1,14 @@
-// Data initialization (for the 'add a project' feature) //
+// Var declaration (later used in the 'add a project' feature) //
 
 let imgToAdd;
 let titleToAdd;
 let catToAdd;
 
 const submit = document.querySelector(".sendProjectBtn");
+const apiUrl = "http://localhost:5678/api/works/";
 
 // ----- API FETCH FOR WORKS AND CATEGORIES ----- //
-const fetchWorks = fetch("http://localhost:5678/api/works").then((response) =>
-  response.json()
-);
+const fetchWorks = fetch(apiUrl).then((response) => response.json());
 const fetchCategories = fetch("http://localhost:5678/api/categories").then(
   (response) => response.json()
 );
@@ -18,7 +17,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   const works = results[0];
   const categories = results[1];
 
-  // This function resets the main project gallery and the one in the modal if it exists //
+  // Reseting the main project gallery and the one in the modal if it exists //
   function reset() {
     document.querySelector(".gallery").innerHTML = "";
     generateWorks(works);
@@ -30,18 +29,15 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
 
   reset();
 
+  // Reseting the form entries (activated when closing the modal) //
   function resetValues() {
-    /* imgToAdd = "";
-    titleToAdd = "";
-    catToAdd = ""; */
-
     document.getElementById("title").value = "";
     document.getElementById("cat").value = "";
     document.querySelector("input[type=file]").value = null;
   }
 
   // ----- MAIN GALLERY ----- //
-  // This fonction generates all the HTML and dynamic contents for the main gallery //
+  // Generating all the HTML and dynamic contents for the main gallery //
   function generateWorks(works) {
     for (let i = 0; i < works.length; i++) {
       // Creating HTML tags for each card, which will be injected into '.gallery' //
@@ -62,7 +58,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   }
 
   // ----- MODAL GALLERY AND PROJECT SUPRESSION ----- //
-  // This fonction generates all the HTML and dynamic contents for the modal gallery and handle the work suppression feature //
+  // Generating all the HTML and dynamic contents for the modal gallery and handling the work suppression feature //
   function generateModalGallery(works) {
     for (let i = 0; i < works.length; i++) {
       // Creating HTML tags, which will be injected into the modal //
@@ -83,9 +79,9 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
       // Work suppression feature //
       modalIconDiv.addEventListener("click", (event) => {
         const supressId = modalIconDiv.id;
-        const apiUrl = "http://localhost:5678/api/works/";
         const deleteUrl = apiUrl + supressId;
         const token = window.localStorage.getItem("token");
+
         fetch(deleteUrl, {
           method: "DELETE",
           headers: {
@@ -108,7 +104,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
 
   // ----- PROJECTS FILTERING ----- //
   function generateFilters() {
-    // Creating HTML tag for the 'all works' btn + assigning content and classes + injecting to the DOM. //
+    // Creating HTML tag for the 'all works' btn + assigning content and classes + injecting into the DOM. //
     const allWorks = document.createElement("a");
     allWorks.classList.add("allUsers", "selected");
     allWorks.innerText = "Tous";
@@ -135,9 +131,9 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     filtersVisibility();
   }
 
-  generateFilters(categories);
+  generateFilters();
 
-  // This function handles project sorting. Depending on the category passed as an argument, it clears the gallery and regenerates it from a filtered list. //
+  // Handeling project sorting. Depending on the category passed as an argument, it clears the gallery and regenerates it from a filtered list. //
   function filterWorks(catId) {
     const filteredWorks = works.filter((work) => work.category.id === catId);
     document.querySelector(".gallery").innerHTML = "";
@@ -145,7 +141,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     resetSelected();
   }
 
-  // This function resets the "selected" classes on links in the "filters" section. //
+  // Reseting the "selected" classes on links in the "filters" section. //
   function resetSelected() {
     const allLinks = document.querySelectorAll(".filters a");
     allLinks.forEach((link) => {
@@ -153,7 +149,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     });
   }
 
-  // This function handles the visibility of the filters depending on the presence of an auth Token //
+  // Handeling the visibility of the filters depending on the presence of an auth Token //
   function filtersVisibility() {
     // Fetching the necessary elements //
     const token = localStorage.getItem("token");
@@ -196,21 +192,21 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     target.addEventListener("click", closeModal);
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.addEventListener("click", closeModal);
-
     submit.removeEventListener("click", submitProject);
   };
 
   // ----- MODAL PHASE 2 ----- //
-
   const addProjetcBtn = document.querySelector(".modalBtn");
 
+  // Opening the modal phase 2 on click //
   addProjetcBtn.addEventListener("click", () => {
     document.querySelector(".accessDenied").style.display = "none";
     setModalPhase2();
-    
+
     submit.addEventListener("click", submitProject);
   });
 
+  // Generating the content of the select categories input and handling the modal display //
   function setModalPhase2() {
     const select = document.getElementById("cat");
     select.innerHTML = "";
@@ -233,7 +229,6 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   }
 
   // Generating a preview of the selected image //
-  /* const dropPhoto = document.querySelector(".dropPhoto"); */
   const inputFile = document.getElementById("inputFile");
   inputFile.addEventListener("change", () => {
     handleFiles(inputFile.files);
@@ -249,16 +244,10 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
         continue;
       }
 
-      /* const img = document.createElement("img"); */
-      //___NEW___//
       const img = document.querySelector(".dropPhoto img");
       img.style.display = null;
       document.querySelector(".dropPhoto label").style.display = "none";
-
       img.file = file;
-
-      /* dropPhoto.innerHTML = ""; */
-      /* dropPhoto.appendChild(img); */
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -289,9 +278,7 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
   }
 
   // ----- ADDING A PROJECT ----- //
-
   // The 3 necessary data for the fetch are now collected and placed into a new FromData Object //
-  
   function submitProject() {
     titleToAdd = document.getElementById("title").value;
     catToAdd = document.getElementById("cat").value;
@@ -331,14 +318,12 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     target.style.display = "none";
     document.querySelector(".phase-1").style.display = "none";
     document.querySelector(".phase-2").style.display = "none";
-
     document.querySelector(".dropPhoto img").style.display = "none";
     document.querySelector(".dropPhoto label").style.display = null;
-
     target.removeEventListener("click", closeModal);
+
     const closeBtn = document.querySelector(".closeBtn");
     closeBtn.removeEventListener("click", closeModal);
-
     submit.removeEventListener("click", submitProject);
   };
 
@@ -356,43 +341,3 @@ const logOut = document.querySelector(".logout");
 logOut.addEventListener("click", () => {
   window.localStorage.removeItem("token");
 });
-
-
-
-/* document.addEventListener("keydown", (e) => {
-  if (e.key === "l") {
-    console.log(imgToAdd);
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "k") {
-    console.log(titleToAdd);
-  }
-});
- */
-// ----- POST PROJECT ----- //
-
-/* function getBackProject11 () {
-    const token = window.localStorage.getItem("token");
-    const projectImg = document.getElementById("postProject");
-    
-    projectImg.addEventListener("change", () => {
-        const newImg = projectImg.files[0]; // Obtenez le premier fichier sélectionné
-
-        const formData = new FormData();
-        formData.append("image", newImg); // Ajoutez le fichier à l'objet FormData
-        formData.append("title", "Hotel First Arte - New Delhi");
-        formData.append("category", 3);
-
-        fetch('http://localhost:5678/api/works', {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        });
-    });
-}
-
-getBackProject11(); */
