@@ -95,9 +95,11 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
             if (response.status === 401) {
               window.location.href = "login.html";
               window.localStorage.removeItem("token");
+            } else {
+              location.reload();
             }
           });
-        reset();
+          reset();
       });
     }
   }
@@ -283,6 +285,8 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
     titleToAdd = document.getElementById("title").value;
     catToAdd = document.getElementById("cat").value;
 
+    console.log("SubmitProject");
+
     const newProject = new FormData();
     newProject.append("image", imgToAdd);
     newProject.append("title", titleToAdd);
@@ -306,6 +310,8 @@ Promise.all([fetchWorks, fetchCategories]).then((results) => {
           if (response.status === 401) {
             window.location.href = "login.html";
             window.localStorage.removeItem("token");
+          } else {
+            location.reload();
           }
         });
     }
